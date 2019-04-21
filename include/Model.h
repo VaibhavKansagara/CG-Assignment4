@@ -24,7 +24,7 @@ extern unsigned int no_m_press;
 
 using namespace std;
 
-#define PI 3.14159_
+#define PI 3.14159
 
 class Model{
 public:

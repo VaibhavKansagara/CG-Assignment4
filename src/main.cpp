@@ -66,6 +66,9 @@ static void handleKeys(GLFWwindow* window, int key, int code, int action, int mo
   controller.handleKeys(window,key,code,action,mode);
 }
 
+static void handleMouseButton(GLFWwindow* window, int button, int action, int mods){
+  controller.handleMouseButton(window,button,action,mods);
+}
 
 int main(){
     GLFWwindow * window = create_window();
@@ -170,6 +173,7 @@ int main(){
     while(!glfwWindowShouldClose(window)){
         glfwPollEvents();
         glfwSetKeyCallback(window,handleKeys);
+        glfwSetMouseButtonCallback(window, handleMouseButton);
         controller.process_input(window);
         glClearColor(0.2f,0.3f,0.3f,1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -108,7 +108,24 @@ void Controller::handleKeys(GLFWwindow* window, int key, int code, int action, i
     }
 }
 
-void Controller::process_input(GLFWwindow* window){
+void Controller::handleMouseButton(GLFWwindow* window, int button, int action, int mods){
+    double x,y;
+    glfwGetCursorPos(window,&x,&y);
+    int active_model = find(x,y);
+
+    if(active_model == NOT_ANY_MODEL) return;
+
+    if(button == GLFW_MOUSE_BUTTON_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+        Model* model = scene.get_model_id(active_model);
+        if (model->get_is_select_rotate())
+            model->set_select_rotate(false);
+        else 
+            model->set_select_rotate(true);
+    }
+}
+
+
+void Controller::process_input(GLFWwindow* window) {
     double x,y;
     glfwGetCursorPos(window,&x,&y);
     int active_model = find(x,y);
@@ -150,15 +167,6 @@ void Controller::process_input(GLFWwindow* window){
     if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE){
         Model* model = scene.get_model_id(active_model);
         model->set_selected(false);
-    }
-
-    if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS ||
-            glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_RIGHT) == GLFW_REPEAT){
-        Model* model = scene.get_model_id(active_model);
-        if (model->get_is_select_rotate())
-            model->set_select_rotate(false);
-        else 
-            model->set_select_rotate(true);
     }
 }
 

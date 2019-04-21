@@ -33,6 +33,8 @@ public:
 
     void handleKeys(GLFWwindow* window, int key, int code, int action, int mods);
 
+    void handleMouseButton(GLFWwindow* window, int button, int action, int mods);
+
     void process_input(GLFWwindow* window);
 
 private:
