@@ -158,6 +158,8 @@ int main(){
     scene.addEdge(1,5);
     scene.addEdge(2,6);
     scene.addEdge(3,7);
+    scene.addEdge(1,2);
+    scene.addEdge(2,3);
     //
     
     //create a view object

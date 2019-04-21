@@ -113,6 +113,20 @@ void Controller::process_input(GLFWwindow* window){
     glfwGetCursorPos(window,&x,&y);
     int active_model = find(x,y);
 
+    int len = scene.get_models().size();
+    for(int i=0;i<len;i++){
+        Model *model = scene.get_model_id(i);
+        if (model->get_is_select_rotate()) {
+            glm::vec3 centre;
+            centre.x = (model->get_mini().getX() + model->get_maxi().getX()) / 2.0;
+            centre.y = (model->get_mini().getY() + model->get_maxi().getY()) / 2.0;
+            centre.z = (model->get_mini().getZ() + model->get_maxi().getZ()) / 2.0;
+            model->set_angle(((int)model->get_angle() + 2) % 360);
+            glm::quat quat = glm::angleAxis(glm::radians(model->get_angle()), glm::normalize(centre));
+            model->set_rotate(glm::mat4_cast(quat) * model->get_rotate());
+        }
+    }
+
     if(active_model == NOT_ANY_MODEL) return;
 
     if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS ||
@@ -141,44 +155,10 @@ void Controller::process_input(GLFWwindow* window){
     if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS ||
             glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_RIGHT) == GLFW_REPEAT){
         Model* model = scene.get_model_id(active_model);
-        model->set_select_rotate(true);
-
-        float winX, winY,winZ;
-        winX = x;
-        winY = 800 - y;
-        winX = (winX / 400) - 1;
-        winY = (winY / 400) - 1;
-        glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
-        winZ = winZ*2-1;
-
-        glm::vec3 newpos = glm::vec3(winX,winY,winZ);
-        glm::vec3 oldPos = model->get_cursor_pos();
-        float d = sqrt(newpos.x * newpos.x + newpos.y * newpos.y);
-        glm::vec3 p1;
-        p1.x = newpos.x;
-        p1.y = newpos.y;
-        p1.z = cos((3.14159f / 2.0f) * (d < 1.0 ? d : 1.0f));
-
-        d = sqrt(oldPos.x * oldPos.x + oldPos.y * oldPos.y);
-        glm::vec3 p2;
-        p2.x = oldPos.x;
-        p2.y = oldPos.y;
-        p2.z = cos((3.14159f / 2.0f) * (d < 1.0 ? d : 1.0f));
-
-        float angle = 90.f * sqrt((p2.x - p1.x) * (p2.x - p1.x) +
-                                (p2.y - p1.y) * (p2.y - p1.y) +
-                                (p2.z - p1.z) * (p2.z - p1.z));
-        glm::vec3 normal = glm::cross(p1, p2);
-        if (normal.x == 0 and normal.y == 0 and normal.z == 0) {
-        return;
-        }
-        glm::quat quat = glm::angleAxis(glm::radians(angle), glm::normalize(normal));
-        model->set_rotate(glm::mat4_cast(quat) * model->get_rotate());
-    }
-
-    if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE){
-        Model* model = scene.get_model_id(active_model);
-        model->set_select_rotate(false);
+        if (model->get_is_select_rotate())
+            model->set_select_rotate(false);
+        else 
+            model->set_select_rotate(true);
     }
 }
 

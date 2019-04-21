@@ -24,7 +24,7 @@ extern unsigned int no_m_press;
 
 using namespace std;
 
-#define PI 3.14159
+#define PI 3.14159_
 
 class Model{
 public:
@@ -65,6 +65,12 @@ public:
     glm::mat4 get_model() const;
 
     bool get_light_source() const;
+
+    Point get_mini() const;
+
+    Point get_maxi() const;
+
+    float get_angle() const;
 
     unsigned int get_VAO() const;
 
@@ -115,6 +121,8 @@ public:
     void set_plane(const vector<float>& pl);
 
     void set_id(int num);
+
+    void set_angle(float ang);
 
     bool is_inside(Point trans_coord);
 
@@ -167,6 +175,7 @@ private:
     int light_no;
     glm::vec3 lightpos;
     int id;
+    float angle;
 };
 
 #endif

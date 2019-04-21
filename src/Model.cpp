@@ -89,6 +89,10 @@ const Texture & Model::get_texture() const{
     return texture;
 }
 
+float Model::get_angle() const {
+    return angle;
+}
+
 bool Model::get_light_source() const {
     return (is_light_source == true);
 }
@@ -119,6 +123,14 @@ vector<float> Model::get_plane() const {
 
 int Model::get_id() const {
     return id;
+}
+
+Point Model::get_mini() const {
+    return mini;
+}
+
+Point Model::get_maxi() const {
+    return maxi;
 }
 
 void Model::set_vertex_color(int idx,const Color& color){
@@ -166,6 +178,10 @@ void Model::set_texture(const Texture& tex) {
 
 void Model::set_id(int num) {
     id = num;
+}
+
+void Model::set_angle(float ang){
+    angle = ang;
 }
 
 void Model::translate(glm::vec3 tr) {
