@@ -43,7 +43,7 @@ void View::display(const Model& model,Shader& ourshader) {
 
     glm::mat4 scale;
     scale = model.get_scale();
-    glm::mat4 model_matrix = model.get_translate()*model.get_rotate()*scale;
+    glm::mat4 model_matrix = model.get_revolve() * model.get_translate() *model.get_rotate() * scale;
 
     int modelLoc = glGetUniformLocation(ourshader.ID, "model");
     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model_matrix));

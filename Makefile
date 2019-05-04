@@ -9,25 +9,25 @@ main : $(obj)
 main.o : src/main.cpp include/SceneGraph.h include/Model.h include/View.h include/Controller.h include/Parser.h
 		$(CXX) -c src/main.cpp
 
-stb_image.o : include/stb_image.h
+stb_image.o : src/stb_image.cpp
 		$(CXX) -c src/stb_image.cpp
 
-Point.o : include/Point.h
+Point.o : src/Point.cpp
 		$(CXX) -c src/Point.cpp
 
-Color.o : include/Color.h
+Color.o : src/Color.cpp
 		$(CXX) -c src/Color.cpp
 
-Texture.o : include/Texture.h
+Texture.o : src/Texture.cpp
 		$(CXX) -c src/Texture.cpp
 
-Model.o : include/Model.h include/Point.h include/Color.h include/Texture.h
+Model.o : src/Model.cpp include/Point.h include/Color.h include/Texture.h
 		$(CXX) -c src/Model.cpp
 
-SceneGraph.o : include/Model.h
+SceneGraph.o : src/SceneGraph.cpp include/Model.h
 		$(CXX) -c src/SceneGraph.cpp
 
-Parser.o : include/Model.h
+Parser.o : src/Parser.cpp include/Model.h
 		$(CXX) -c src/Parser.cpp
 
 View.o : include/View.h include/Model.h include/Shader.h
@@ -36,7 +36,7 @@ View.o : include/View.h include/Model.h include/Shader.h
 Controller.o : include/Model.h include/SceneGraph.h include/View.h
 		$(CXX) -c src/Controller.cpp 
 
-Shader.o : include/Shader.h
+Shader.o : src/Shader.cpp
 		$(CXX) -c src/Shader.cpp
 
 clean :

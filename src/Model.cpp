@@ -8,11 +8,14 @@ Model::Model(){
     m_translate = glm::mat4(1.0f);
     m_rotate = glm::mat4(1.0f);
     m_scale = glm::mat4(1.0f);
+    m_revolve = glm::mat4(1.0f);
     is_selected = false;
     is_light_source = false;
     is_select_rotate = false;
     no_m_press = 0;
     no_t_press = 0;
+    angle = 0;
+    rev_angle = 0;
 }
 
 Model::~Model(){
@@ -133,6 +136,18 @@ Point Model::get_maxi() const {
     return maxi;
 }
 
+glm::mat4 Model::get_revolve() const {
+    return m_revolve;
+}
+
+float Model::get_rev_angle() const {
+    return rev_angle;
+}
+
+glm::vec3 Model::get_rev_axis() const {
+    return rev_axis;
+}
+
 void Model::set_vertex_color(int idx,const Color& color){
     vertices_color[idx] = color;
 }
@@ -153,8 +168,16 @@ void Model::set_scale(const glm::mat4& sc) {
     m_scale = sc;
 }
 
+void Model::set_rev_axis(glm::vec3 axis) {
+    rev_axis = axis;
+}
+
 void Model::set_lightpos(glm::vec3 pos) {
     lightpos = pos;
+}
+
+void Model::set_rev_angle(float angle) {
+    rev_angle = angle;
 }
 
 void Model::set_rotate(const glm::mat4& rr) {
@@ -170,6 +193,10 @@ void Model::set_light_no(int no) {
 
 void Model::set_select_rotate(bool val) {
     is_select_rotate = val;
+}
+
+void Model::set_revolve(const glm::mat4& rv) {
+    m_revolve = rv;
 }
 
 void Model::set_texture(const Texture& tex) {

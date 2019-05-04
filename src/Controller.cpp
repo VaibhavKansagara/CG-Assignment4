@@ -139,8 +139,16 @@ void Controller::process_input(GLFWwindow* window) {
             centre.y = (model->get_mini().getY() + model->get_maxi().getY()) / 2.0;
             centre.z = (model->get_mini().getZ() + model->get_maxi().getZ()) / 2.0;
             model->set_angle(((int)model->get_angle() + 2) % 360);
-            glm::quat quat = glm::angleAxis(glm::radians(model->get_angle()), glm::normalize(centre));
-            model->set_rotate(glm::mat4_cast(quat) * model->get_rotate());
+            model->set_rotate(glm::rotate(model->get_rotate(),
+                              glm::radians(model->get_angle()),glm::normalize(centre)));
+            if (model->get_id() == 1) {
+                model->set_revolve(glm::rotate(model->get_revolve(),
+                              glm::radians(model->get_rev_angle()),glm::normalize(model->get_rev_axis())));
+                float angle = model->get_rev_angle();
+                if (angle > 360) angle = 0;
+                else angle = angle + 0.03f;
+                model->set_rev_angle(angle);
+            }
         }
     }
 

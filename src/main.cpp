@@ -27,6 +27,7 @@ const GLfloat screenheight = 800.0;
 vector<Texture> texture_list;
 unsigned int no_t_press = 0;
 unsigned int no_m_press = 0;
+float angleB = 0;
 
 int source1=1,source2=1,source3=1,source4=1;
 Controller controller;
@@ -86,28 +87,12 @@ int main(){
 
     //Create Model and add models.
     Model A = addModel("data/sphere.ply");
-    A.set_texture(texture_list[0]);
-    A.scale(glm::vec3(0.1,0.1,0.1));
-    A.translate(glm::vec3(-0.5f, 0.1f, 0.0f));
-    A.pass_info_shader();
 
     Model B = addModel("data/sphere.ply");
-    B.set_texture(texture_list[0]);
-    B.scale(glm::vec3(0.1,0.1,0.1));
-    B.translate(glm::vec3(-0.1f, 0.1f, 0.0f));
-    B.pass_info_shader();
 
     Model C = addModel("data/sphere.ply");
-    C.set_texture(texture_list[0]);
-    C.scale(glm::vec3(0.1,0.1,0.1));
-    C.translate(glm::vec3(0.4f, 0.1f, 0.0f));
-    C.pass_info_shader();
 
     Model D = addModel("data/sphere.ply");
-    D.set_texture(texture_list[0]);
-    D.scale(glm::vec3(0.1,0.1,0.1));
-    D.translate(glm::vec3(0.9f, 0.1f, 0.0f));
-    D.pass_info_shader();
     //
 
     glEnable(GL_DEPTH_TEST);
@@ -161,10 +146,34 @@ int main(){
     scene.addEdge(1,5);
     scene.addEdge(2,6);
     scene.addEdge(3,7);
+    scene.addEdge(0,1);
     scene.addEdge(1,2);
     scene.addEdge(2,3);
     //
-    
+
+    A.set_texture(texture_list[0]);
+    A.scale(glm::vec3(0.3,0.3,0.3));
+    A.pass_info_shader();
+
+    B.set_texture(texture_list[0]);
+    B.scale(glm::vec3(0.1,0.1,0.1));
+    B.translate(glm::vec3(-0.5f, 0.1f, 0.0f));
+    B.pass_info_shader();
+
+    C.set_texture(texture_list[0]);
+    C.scale(glm::vec3(0.1,0.1,0.1));
+    C.translate(glm::vec3(0.4f, 0.1f, 0.0f));
+    C.pass_info_shader();
+
+    D.set_texture(texture_list[0]);
+    D.scale(glm::vec3(0.1,0.1,0.1));
+    D.translate(glm::vec3(0.9f, 0.1f, 0.0f));
+    D.pass_info_shader();
+
+    //hardcode the movements of objects.
+    B.set_rev_axis(glm::vec3(0.0f,0.0f,1.0f));
+    //hardcode part ends.
+
     //create a view object
     View view;
 
@@ -177,6 +186,10 @@ int main(){
         controller.process_input(window);
         glClearColor(0.2f,0.3f,0.3f,1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        //movement of B
+        
+        //
 
         ourshader.use();
         ourshader.setVec3("lightColor1", 1.0f, 1.0f, 1.0f);

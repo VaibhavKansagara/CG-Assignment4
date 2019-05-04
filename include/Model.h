@@ -88,11 +88,19 @@ public:
 
     int get_id() const;
 
+    glm::mat4 get_revolve() const;
+
+    float get_rev_angle() const;
+
+    glm::vec3 get_rev_axis() const;
+
     void set_vertex_color(int idx,const Color& color);
 
     void set_translate(const glm::mat4& tr);
 
     void set_scale(const glm::mat4& sc);
+
+    void set_revolve(const glm::mat4& rv);
 
     void set_light_no(int no);
 
@@ -123,6 +131,10 @@ public:
     void set_id(int num);
 
     void set_angle(float ang);
+
+    void set_rev_axis(glm::vec3 axis);
+
+    void set_rev_angle(float angle);
 
     bool is_inside(Point trans_coord);
 
@@ -166,7 +178,7 @@ private:
     vector< vector<int> > adj_list;
     vector<Color> vertices_color;
     glm::vec3 currpos;
-    glm::mat4 m_translate,m_rotate,m_scale;
+    glm::mat4 m_translate,m_rotate,m_scale,m_revolve;
     Point mini,maxi;
     bool is_selected,is_light_source,is_select_rotate;
     unsigned int VAO,VBO,EBO,textureVBO;
@@ -175,7 +187,8 @@ private:
     int light_no;
     glm::vec3 lightpos;
     int id;
-    float angle;
+    float angle,rev_angle;
+    glm::vec3 rev_axis;
 };
 
 #endif
