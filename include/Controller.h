@@ -23,7 +23,7 @@ public:
 
     ~Controller();
 
-    void set_scene(const SceneGraph& scene);
+    void set_scene(SceneGraph* scn);
 
     void add(Model* model);
 
@@ -38,7 +38,7 @@ public:
     void process_input(GLFWwindow* window);
 
 private:
-	SceneGraph scene;
+	SceneGraph *scene;
 	View* view;
 };
 

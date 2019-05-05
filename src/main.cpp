@@ -147,28 +147,28 @@ int main(){
     //light part ends.
 
     //create a scene graph.
-    SceneGraph scene;
-    scene.addModel(&A);
-    scene.addModel(&B);
-    scene.addModel(&C);
-    scene.addModel(&D);
-    scene.addModel(&light_source1);    
-    scene.addModel(&light_source2);
-    scene.addModel(&light_source3);
-    scene.addModel(&light_source4);
+    SceneGraph *scene = new SceneGraph();
+    scene->addModel(&A);
+    scene->addModel(&B);
+    scene->addModel(&C);
+    scene->addModel(&D);
+    scene->addModel(&light_source1);    
+    scene->addModel(&light_source2);
+    scene->addModel(&light_source3);
+    scene->addModel(&light_source4);
     // add the connections.
-    scene.addEdge(0,4);
-    scene.addEdge(1,5);
-    scene.addEdge(2,6);
-    scene.addEdge(3,7);
-    scene.addEdge(0,1);
-    scene.addEdge(1,2);
-    scene.addEdge(2,3);
+    scene->addEdge(0,4);
+    scene->addEdge(1,5);
+    scene->addEdge(2,6);
+    scene->addEdge(3,7);
+    scene->addEdge(0,1);
+    scene->addEdge(1,2);
+    scene->addEdge(2,3);
     
     //set motion for objects.
-    scene.setMotion(3,1);
-    scene.setMotion(1,2);
-    scene.setMotion(2,3);
+    scene->setMotion(3,1);
+    scene->setMotion(1,2);
+    scene->setMotion(2,3);
     //
 
     //hardcode the movements of objects.
@@ -205,13 +205,12 @@ int main(){
         ourshader.setVec3("lightPos4", lightPos4.x ,lightPos4.y,lightPos4.z);
         ourshader.setInt("source4",source4);
 
-
         //display all the models.
         view.display(A,ourshader);
         view.display(B,ourshader);
         view.display(C,ourshader);
         view.display(D,ourshader);
-        scene.update();
+        scene->update();
 
         // use lighting shader and display the source of the light.
         lightingShader.use();

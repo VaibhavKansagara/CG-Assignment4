@@ -30,10 +30,10 @@ SceneGraph.o : src/SceneGraph.cpp include/Model.h
 Parser.o : src/Parser.cpp include/Model.h
 		$(CXX) -c src/Parser.cpp
 
-View.o : include/View.h include/Model.h include/Shader.h
+View.o : src/View.cpp include/Model.h include/Shader.h
 		$(CXX) -c src/View.cpp
 
-Controller.o : include/Model.h include/SceneGraph.h include/View.h
+Controller.o : src/Controller.cpp include/Model.h include/SceneGraph.h include/View.h
 		$(CXX) -c src/Controller.cpp 
 
 Shader.o : src/Shader.cpp

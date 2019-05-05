@@ -610,7 +610,7 @@ void Model::update(float speed, glm::vec3 parent_center, glm::mat4 worldMatrix){
         translate(temp);
         m_translate = glm::translate(m_translate, glm::vec3(0.0, 0.025, 0.0));
         period++;
-        if(period == 5 - int(speed*100.0f)){
+        if(period >= 5 - int(speed*100.0f)){
             period = 0;
             motion = -1;
         }
@@ -621,16 +621,16 @@ void Model::update(float speed, glm::vec3 parent_center, glm::mat4 worldMatrix){
         translate(temp);
         m_translate = glm::translate(m_translate, glm::vec3(0.0, -0.025, 0.0));
         period++;
-        if(period == 5 - int(speed*100.0f)){
+        if(period >= 5 - int(speed*100.0f)){
             period = 0;
             motion = 1;
         }
     }
     else if(motion == 2){
-        m_revolve = glm::rotate(m_revolve, 0.03f, glm::vec3(0.0, 0.0, 1.0));
+        m_revolve = glm::rotate(m_revolve, 0.03f + speed, glm::vec3(0.0, 0.0, 1.0));
         m_translate = glm::translate(m_translate, glm::vec3(0.025, 0.0, 0.0));
         period++;
-        if(period == 10 - int(speed*100.0f)){
+        if(period >= 10 - int(speed*100.0f)){
             period = 0;
             motion = -2;
         }
@@ -640,7 +640,7 @@ void Model::update(float speed, glm::vec3 parent_center, glm::mat4 worldMatrix){
 
         m_translate = glm::translate(m_translate, glm::vec3(-0.025, 0.0, 0.0));
         period++;
-        if(period == 10 - int(speed*100.0f)){
+        if(period >= 10 - int(speed*100.0f)){
             period = 0;
             motion = 2;
         }

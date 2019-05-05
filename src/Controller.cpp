@@ -7,12 +7,12 @@ extern vector<Texture> texture_list;
 
 Controller::Controller(){}
 
-void Controller::set_scene(const SceneGraph& scn) {
+void Controller::set_scene(SceneGraph* scn) {
     scene = scn;
 }
 
 void Controller::add(Model* model){
-    scene.addModel(model);
+    scene->addModel(model);
 }
 
 //because we have same view and projection matrix for all models. 
@@ -31,17 +31,17 @@ Point Controller::get_trans_coord(double x,double y){
 
 int Controller::find(double x,double y){
     Point trans_coord = get_trans_coord(x,y);
-    int len = scene.get_models().size();
+    int len = scene->get_models().size();
     for(int i=0;i<len;i++){
         glm::vec3 pos = glm::vec3(trans_coord.getX(),trans_coord.getY(),trans_coord.getZ());
-        pos = glm::inverse(scene.get_model_id(i)->get_model()) * glm::vec4(pos,1.0f);
+        pos = glm::inverse(scene->get_model_id(i)->get_model()) * glm::vec4(pos,1.0f);
         Point temp(pos.x,pos.y,pos.z);
-        if(scene.get_model_id(i)->is_inside(temp) == true){
-            if(scene.get_model_id(i)->is_select() == false and 
-                  scene.get_model_id(i)->get_is_select_rotate() == false){
-                scene.get_model_id(i)->set_cursor_pos(glm::vec3(trans_coord.getX(),
+        if(scene->get_model_id(i)->is_inside(temp) == true){
+            if(scene->get_model_id(i)->is_select() == false and 
+                  scene->get_model_id(i)->get_is_select_rotate() == false){
+                scene->get_model_id(i)->set_cursor_pos(glm::vec3(trans_coord.getX(),
                                                 trans_coord.getY(),trans_coord.getZ()));
-                scene.get_model_id(i)->set_selected(true);
+                scene->get_model_id(i)->set_selected(true);
             }
             return i;
         }
@@ -52,16 +52,16 @@ int Controller::find(double x,double y){
 void Controller::handleKeys(GLFWwindow* window, int key, int code, int action, int mods){
     if (key == GLFW_KEY_T  && action == GLFW_PRESS){
         unsigned int new_no = (no_t_press + 1) % 4;
-        for (int i=0;i<scene.get_models().size();i++){
-            scene.get_model_id(i)->set_texture(texture_list[new_no]);
+        for (int i=0;i<scene->get_models().size();i++){
+            scene->get_model_id(i)->set_texture(texture_list[new_no]);
         }
         no_t_press = new_no;
     }
 
     if(key == GLFW_KEY_M  && action == GLFW_PRESS){
         unsigned int new_no = (no_m_press + 1) % 3;
-        for (int i=0;i<scene.get_models().size();i++){
-            scene.get_model_id(i)->change_mapping();;
+        for (int i=0;i<scene->get_models().size();i++){
+            scene->get_model_id(i)->change_mapping();;
         }
         no_m_press = new_no;
     }
@@ -78,6 +78,14 @@ void Controller::handleKeys(GLFWwindow* window, int key, int code, int action, i
     if(key == GLFW_KEY_Q  && action == GLFW_PRESS){
         if (source1) source1 = 0;
         else source1 = 1;
+    }
+
+    if(key == GLFW_KEY_I  && action == GLFW_PRESS){
+        scene->set_speed(scene->get_speed() + 0.01);
+    }
+
+    if(key == GLFW_KEY_D  && action == GLFW_PRESS){
+        scene->set_speed(scene->get_speed() - 0.01);
     }
 
     if(key == GLFW_KEY_W  && action == GLFW_PRESS){
@@ -98,12 +106,12 @@ void Controller::handleKeys(GLFWwindow* window, int key, int code, int action, i
     if(active_model == NOT_ANY_MODEL) return;
 
     if(key == GLFW_KEY_KP_ADD  && action == GLFW_PRESS || key == GLFW_KEY_KP_ADD  && action == GLFW_REPEAT){
-        Model* model = scene.get_model_id(active_model);
+        Model* model = scene->get_model_id(active_model);
         model->scale(glm::vec3(1.05,1.05,1.05));
     }
 
     if(key == GLFW_KEY_KP_SUBTRACT  && action == GLFW_PRESS || key == GLFW_KEY_KP_SUBTRACT  && action == GLFW_REPEAT){
-        Model* model = scene.get_model_id(active_model);;
+        Model* model = scene->get_model_id(active_model);;
         model->scale(glm::vec3(0.95,0.95,0.95));
     }
 }
@@ -116,7 +124,7 @@ void Controller::handleMouseButton(GLFWwindow* window, int button, int action, i
     if(active_model == NOT_ANY_MODEL) return;
 
     if(button == GLFW_MOUSE_BUTTON_RIGHT && (action == GLFW_PRESS || action == GLFW_REPEAT)){
-        Model* model = scene.get_model_id(active_model);
+        Model* model = scene->get_model_id(active_model);
         if (model->get_is_select_rotate())
             model->set_select_rotate(false);
         else 
@@ -130,9 +138,9 @@ void Controller::process_input(GLFWwindow* window) {
     glfwGetCursorPos(window,&x,&y);
     int active_model = find(x,y);
 
-    int len = scene.get_models().size();
+    int len = scene->get_models().size();
     for(int i=0;i<len;i++){
-        Model *model = scene.get_model_id(i);
+        Model *model = scene->get_model_id(i);
         if (model->get_is_select_rotate()) {
             glm::vec3 centre;
             centre.x = (model->get_mini().getX() + model->get_maxi().getX()) / 2.0;
@@ -164,16 +172,16 @@ void Controller::process_input(GLFWwindow* window) {
         glReadPixels(x, int(winY), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winZ);
         winZ = winZ*2-1;
 
-        Model* model = scene.get_model_id(active_model);
+        Model* model = scene->get_model_id(active_model);
         glm::vec3 oldPos = model->get_cursor_pos();
         glm::vec3 newPos = glm::vec3(winX,winY,winZ);
         glm::vec3 diff = newPos - oldPos;
-        scene.dfs_update(model->get_id(),glm::vec3(diff.x,diff.y,0.0f));
+        scene->dfs_update(model->get_id(),glm::vec3(diff.x,diff.y,0.0f));
         model->set_cursor_pos(newPos);
     }
 
     if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE){
-        Model* model = scene.get_model_id(active_model);
+        Model* model = scene->get_model_id(active_model);
         model->set_selected(false);
     }
 }
