@@ -605,17 +605,23 @@ void Model::update(float speed, glm::vec3 parent_center, glm::mat4 worldMatrix){
     
     glm::vec3 center = glm::vec3(model*glm::vec4(0.0, 0.0, 0.0, 1.0));
     if(motion == 1){
+        glm::vec3 temp = parent_center - center;
+        temp.y += period*0.1;
+        translate(temp);
         m_translate = glm::translate(m_translate, glm::vec3(0.0, 0.025, 0.0));
         period++;
-        if(period == 20 - int(speed*100.0f)){
+        if(period == 5 - int(speed*100.0f)){
             period = 0;
             motion = -1;
         }
     }
     else if(motion == -1){
+        glm::vec3 temp = parent_center - center;
+        temp.y += 5*0.09 - period*0.09;
+        translate(temp);
         m_translate = glm::translate(m_translate, glm::vec3(0.0, -0.025, 0.0));
         period++;
-        if(period == 20 - int(speed*100.0f)){
+        if(period == 5 - int(speed*100.0f)){
             period = 0;
             motion = 1;
         }
