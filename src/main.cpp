@@ -87,12 +87,27 @@ int main(){
 
     //Create Model and add models.
     Model A = addModel("data/sphere.ply");
+    A.set_texture(texture_list[0]);
+    A.scale(glm::vec3(0.3,0.3,0.3));
+    A.pass_info_shader();
 
     Model B = addModel("data/sphere.ply");
+    B.set_texture(texture_list[0]);
+    B.scale(glm::vec3(0.1,0.1,0.1));
+    B.translate(glm::vec3(-0.5f, 0.1f, 0.0f));
+    B.pass_info_shader();
 
     Model C = addModel("data/sphere.ply");
+    C.set_texture(texture_list[0]);
+    C.scale(glm::vec3(0.1,0.1,0.1));
+    C.translate(glm::vec3(0.4f, 0.1f, 0.0f));
+    C.pass_info_shader();
 
     Model D = addModel("data/sphere.ply");
+    D.set_texture(texture_list[0]);
+    D.scale(glm::vec3(0.1,0.1,0.1));
+    D.translate(glm::vec3(0.9f, 0.1f, 0.0f));
+    D.pass_info_shader();
     //
 
     glEnable(GL_DEPTH_TEST);
@@ -149,26 +164,12 @@ int main(){
     scene.addEdge(0,1);
     scene.addEdge(1,2);
     scene.addEdge(2,3);
+    
+    //set motion for objects.
+    scene.setMotion(3,1);
+    scene.setMotion(1,2);
+    scene.setMotion(2,3);
     //
-
-    A.set_texture(texture_list[0]);
-    A.scale(glm::vec3(0.3,0.3,0.3));
-    A.pass_info_shader();
-
-    B.set_texture(texture_list[0]);
-    B.scale(glm::vec3(0.1,0.1,0.1));
-    B.translate(glm::vec3(-0.5f, 0.1f, 0.0f));
-    B.pass_info_shader();
-
-    C.set_texture(texture_list[0]);
-    C.scale(glm::vec3(0.1,0.1,0.1));
-    C.translate(glm::vec3(0.4f, 0.1f, 0.0f));
-    C.pass_info_shader();
-
-    D.set_texture(texture_list[0]);
-    D.scale(glm::vec3(0.1,0.1,0.1));
-    D.translate(glm::vec3(0.9f, 0.1f, 0.0f));
-    D.pass_info_shader();
 
     //hardcode the movements of objects.
     B.set_rev_axis(glm::vec3(0.0f,0.0f,1.0f));
@@ -186,10 +187,6 @@ int main(){
         controller.process_input(window);
         glClearColor(0.2f,0.3f,0.3f,1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        //movement of B
-        
-        //
 
         ourshader.use();
         ourshader.setVec3("lightColor1", 1.0f, 1.0f, 1.0f);
@@ -214,6 +211,7 @@ int main(){
         view.display(B,ourshader);
         view.display(C,ourshader);
         view.display(D,ourshader);
+        scene.update();
 
         // use lighting shader and display the source of the light.
         lightingShader.use();

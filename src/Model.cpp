@@ -16,6 +16,8 @@ Model::Model(){
     no_t_press = 0;
     angle = 0;
     rev_angle = 0;
+    period = 0;
+    motion = 0;
 }
 
 Model::~Model(){
@@ -148,6 +150,10 @@ glm::vec3 Model::get_rev_axis() const {
     return rev_axis;
 }
 
+glm::vec3 Model::get_center() const {
+    return glm::vec3(get_model() * glm::vec4(0.0, 0.0, 0.0, 1.0));
+}
+
 void Model::set_vertex_color(int idx,const Color& color){
     vertices_color[idx] = color;
 }
@@ -183,6 +189,7 @@ void Model::set_rev_angle(float angle) {
 void Model::set_rotate(const glm::mat4& rr) {
     m_rotate = rr;
 }
+
 void Model::set_selected(bool val) {
     is_selected = val;
 }
@@ -209,6 +216,10 @@ void Model::set_id(int num) {
 
 void Model::set_angle(float ang){
     angle = ang;
+}
+
+void Model::set_motion(int m) {
+    motion = m;
 }
 
 void Model::translate(glm::vec3 tr) {
@@ -436,8 +447,12 @@ void Model::compute_texture_mapping() {
     compute_plane();
 }
 
+void Model::addChild(Model * m) {
+    children.push_back(m);
+}
+
 Point Model::transform(const Point& point,const Point& normal,const Point& incentre,float inradii){
-    //do rotation first then translate and then scale.
+    //do m_rotate first then translate and then scale.
     glm::vec3 circle_normal = glm::vec3(0.0f,0.0f,-1.0f);
     glm::vec3 trg_normal = glm::vec3(normal.getX(),normal.getY(),normal.getZ());
     trg_normal = glm::normalize(trg_normal);
@@ -583,4 +598,63 @@ ifstream & operator >> (ifstream &fin, Model &model){
     model.compute_vertices_color();
     model.compute_texture_mapping();
     return fin;
+}
+
+void Model::update(float speed, glm::vec3 parent_center, glm::mat4 worldMatrix){
+    glm::mat4 model = m_revolve*m_translate* m_rotate * m_scale;
+    
+    glm::vec3 center = glm::vec3(model*glm::vec4(0.0, 0.0, 0.0, 1.0));
+    if(motion == 1){
+        m_translate = glm::translate(m_translate, glm::vec3(0.0, 0.025, 0.0));
+        period++;
+        if(period == 20 - int(speed*100.0f)){
+            period = 0;
+            motion = -1;
+        }
+    }
+    else if(motion == -1){
+        m_translate = glm::translate(m_translate, glm::vec3(0.0, -0.025, 0.0));
+        period++;
+        if(period == 20 - int(speed*100.0f)){
+            period = 0;
+            motion = 1;
+        }
+    }
+    else if(motion == 2){
+        m_revolve = glm::rotate(m_revolve, 0.03f, glm::vec3(0.0, 0.0, 1.0));
+        m_translate = glm::translate(m_translate, glm::vec3(0.025, 0.0, 0.0));
+        period++;
+        if(period == 10 - int(speed*100.0f)){
+            period = 0;
+            motion = -2;
+        }
+    }
+    else if(motion == -2){
+        m_revolve = glm::rotate(m_revolve, 0.03f + speed, glm::vec3(0.0, 0.0, 1.0));
+
+        m_translate = glm::translate(m_translate, glm::vec3(-0.025, 0.0, 0.0));
+        period++;
+        if(period == 10 - int(speed*100.0f)){
+            period = 0;
+            motion = 2;
+        }
+    }
+    else if(motion == 3){
+        glm::vec3 towards = glm::vec3(glm::vec4(parent_center - center, 1.0f));
+        towards = glm::normalize(towards) / (50.0f - 100.0f*speed);
+        m_translate = glm::translate(m_translate, towards);
+    }
+
+    if(is_select_rotate)
+    {
+        m_rotate = glm::rotate(m_rotate, 0.05f + speed, glm::vec3(0.0, 1.0, 0.0));
+    }
+
+    for(int i = 0; i<children.size(); i++){
+        children[i]->update(speed, center ,worldMatrix* m_translate *m_scale);
+    }
+}
+
+void Model::setMotion(int m){
+    motion = m;
 }

@@ -13,7 +13,7 @@ public:
 
     void addModel(Model* model);
 
-    int get_speed() const;
+    float get_speed() const;
 
     // directional edge: a -> b
     void addEdge(int a,int b);
@@ -22,16 +22,26 @@ public:
 
     Model* get_model_id(int idx) const;
 
-    void set_speed(int sp);
+    void set_speed(float sp);
 
     void dfs_update(int source,const glm::vec3& trn);
+
+    void update();
+
+	void setMotion(int index,int m);
+
+	void setRotate();
+    
+	void changeSpeed(float num);
 private:
     vector<Model*> models;
 
     // limit on number of models.
     vector<vector<int>> adj;
 
-    int speed;
+    float speed;
+
+    int modelnum;
 };
 
 #endif

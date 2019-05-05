@@ -76,6 +76,8 @@ public:
 
     const Texture& get_texture() const;
 
+    glm::mat4 getWorldMatrix() const;
+
     bool is_select() const;
 
     bool get_is_select_rotate() const;
@@ -93,6 +95,8 @@ public:
     float get_rev_angle() const;
 
     glm::vec3 get_rev_axis() const;
+
+    glm::vec3 get_center() const;
 
     void set_vertex_color(int idx,const Color& color);
 
@@ -136,6 +140,8 @@ public:
 
     void set_rev_angle(float angle);
 
+    void set_motion(int m);
+
     bool is_inside(Point trans_coord);
 
     void compute_adj_list();
@@ -167,6 +173,14 @@ public:
     void scale(glm::vec3 sc);
 
     friend ifstream & operator >> (ifstream &fin, Model &model);
+
+    void addChild(Model * m);
+
+	void update(float speed, glm::vec3 parent_center, glm::mat4 worldMatrix);
+
+	void setMotion(int m);
+
+	void setRotate();
 private:
     string file_format,data_format;
     GLfloat version_no;
@@ -184,11 +198,13 @@ private:
     unsigned int VAO,VBO,EBO,textureVBO;
     Texture texture;
     vector<float> spherical,cylindrical,plane;
-    int light_no;
+    int light_no,modelnum;
     glm::vec3 lightpos;
     int id;
     float angle,rev_angle;
     glm::vec3 rev_axis;
+    int motion,period;
+    vector <Model*> children;
 };
 
 #endif

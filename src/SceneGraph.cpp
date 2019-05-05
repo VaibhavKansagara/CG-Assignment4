@@ -1,6 +1,9 @@
 #include "../include/SceneGraph.h"
 
-SceneGraph::SceneGraph(){}
+SceneGraph::SceneGraph(){
+    speed = 0;
+    modelnum = 0;
+}
 
 void SceneGraph::addModel(Model* model) {
     model->set_id(models.size());
@@ -9,7 +12,7 @@ void SceneGraph::addModel(Model* model) {
     adj.push_back(vt);
 }
 
-int SceneGraph::get_speed() const {
+float SceneGraph::get_speed() const {
     return speed;
 }
 
@@ -23,9 +26,10 @@ Model* SceneGraph::get_model_id(int idx) const {
 
 void SceneGraph::addEdge(int a,int b) {
     adj[a].push_back(b);
+    models[a]->addChild(models[b]);
 }
 
-void SceneGraph::set_speed(int sp) {
+void SceneGraph::set_speed(float sp) {
     speed = sp;
 }
 
@@ -34,6 +38,14 @@ void SceneGraph::dfs_update(int source,const glm::vec3& trn) {
     for (auto e:adj[source]){
         dfs_update(e,trn);
     }
+}
+
+void SceneGraph::update(){
+    models[0]->update(speed, glm::vec3(0.0, 0.0, 0.0), glm::mat4(1.0));
+}
+
+void SceneGraph::setMotion(int index,int m) {
+    models[index]->setMotion(m);
 }
 
 SceneGraph::~SceneGraph(){}
